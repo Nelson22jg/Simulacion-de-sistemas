@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulación del Paseo Aleatorio del Ebrio</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        #simulacion-form {
+            margin: 20px 0;
+        }
+        #resultado {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Simulación del Paseo Aleatorio del Ebrio</h1>
+    <div id="simulacion-form">
+        <label for="pasos">Número de pasos:</label>
+        <input type="number" id="pasos" value="10">
+        <label for="distancia">Distancia objetivo:</label>
+        <input type="number" id="distancia" value="2">
+        <label for="simulaciones">Número de simulaciones:</label>
+        <input type="number" id="simulaciones" value="10000">
+        <button onclick="simular()">Calcular Probabilidad</button>
+    </div>
+    <div id="resultado"></div>
+
+    <script>
+        function simularPaseoAleatorio(pasos) {
+            let x = 0, y = 0;
+            for (let i = 0; i < pasos; i++) {
+                let direccion = Math.floor(Math.random() * 4);
+                switch (direccion) {
+                    case 0: y++; break; // Norte
+                    case 1: y--; break; // Sur
+                    case 2: x++; break; // Este
+                    case 3: x--; break; // Oeste
+                }
+            }
+            return [x, y];
+        }
+
+        function distanciaManhattan(x, y) {
+            return Math.abs(x) + Math.abs(y);
+        }
+
+        function calcularProbabilidad(pasos, distanciaObjetivo, numSimulaciones) {
+            let exitos = 0;
+            for (let i = 0; i < numSimulaciones; i++) {
+                let [x, y] = simularPaseoAleatorio(pasos);
+                if (distanciaManhattan(x, y) === distanciaObjetivo) {
+                    exitos++;
+                }
+            }
+            return exitos / numSimulaciones;
+        }
+
+        function simular() {
+            const pasos = parseInt(document.getElementById('pasos').value);
+            const distanciaObjetivo = parseInt(document.getElementById('distancia').value);
+            const numSimulaciones = parseInt(document.getElementById('simulaciones').value);
+
+            const probabilidad = calcularProbabilidad(pasos, distanciaObjetivo, numSimulaciones);
+            document.getElementById('resultado').innerText = `La probabilidad de que el ebrio termine a ${distanciaObjetivo} calles de su punto de partida después de ${pasos} pasos es aproximadamente ${(probabilidad * 100).toFixed(2)}%`;
+        }
+    </script>
+</body>
+</html>
